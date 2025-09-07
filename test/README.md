@@ -70,22 +70,6 @@ The test suite validates all 8 LED patterns:
 - `ui_in[5]` - Enable signal for pattern changes
 - `uo_out[7:0]` - 8-bit LED output
 
-## Additional Test Commands
-
-### Run Specific Test
-```bash
-make MODULE=test::test_basic_functionality
-```
-
-### Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Clean Build Files
-```bash
-make clean
-```
 
 ## Test Implementation Details
 

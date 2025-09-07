@@ -41,6 +41,7 @@ test/
 ├── tb.v               # Verilog testbench wrapper
 ├── tb.gtkw            # GTKWave waveform viewer configuration
 └── test.py            # Main Python test suite
+└── Waveforms           # Snapshot of the test Waveforms
 ```
 
 ## Test Coverage
@@ -92,7 +93,12 @@ The main test class provides methods for:
 
 
 ### Wave forms 
+Waveform 1
+![Waveform 3](waveforms/img4.jpeg)
+Waveform 2
 ![Waveform 1](waveforms/img1.jpeg)
+Waveform 3
 ![Waveform 2](waveforms/img2.jpeg)
+Waveform 4
 ![Waveform 3](waveforms/img3.jpeg)
 

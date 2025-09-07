@@ -89,3 +89,10 @@ The main test class provides methods for:
 - Clock period: 125ms (8Hz) for pattern visibility
 - Reset duration: 2 clock cycles
 - Variable observation cycles based on pattern complexity
+
+
+### Wave forms 
+![Waveform 1](waveforms/img1.jpeg)
+![Waveform 2](waveforms/img2.jpeg)
+![Waveform 3](waveforms/img3.jpeg)
+

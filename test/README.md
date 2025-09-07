@@ -1,4 +1,4 @@
-# Testing Framework Documentation
+# Testing 
 
 This repository contains a comprehensive testing framework for the LED Pattern Generator project using CocoTB (Coroutine Co-simulation TestBench) and Icarus Verilog simulator.
 

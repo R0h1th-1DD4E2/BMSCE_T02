@@ -45,26 +45,29 @@ reg [23:0] clk_divider;
 // Input is a 5MHz clock and the speed sel divides it to 4Hz in general and at slow it is 1Hz
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        clk_divider <= 2'b00;
+        clk_divider <= 23'd0;
         div_clk <= 1'b0;
     end else if (pause) begin
         div_clk <= div_clk; // Maintain current state
     end else begin
         clk_divider <= clk_divider + 1;
-        if (speed_sel == 1'b0) begin
-            if(clk_divider >= 62500-1)begin
-                div_clk <= ~div_clk; 
-                clk_divider <= 23'd0;
-            end
-        end else begin
+        if (speed_sel) begin
+        
+//-------------------- Sclaing the frequency to 1Hz by counter value 5000000/2--------------
             if (clk_divider >= 2500000-1) begin
-                div_clk <= ~div_clk; 
+                div_clk <= ~div_clk; // slow frequency at 1Hz
+                clk_divider <= 23'd0;
+            
+            end
+//------------------ Sclaing the frequency to 1Hz by counter value 1250000/2----------------
+        end else begin
+                if(clk_divider >= 62500-1)begin
+                div_clk <= ~div_clk; // fast frequency at 4Hz
                 clk_divider <= 23'd0;
             end
         end
     end
 end
-
 //----------------------------------------------------------------
 //                     Pattern selection logic
 //----------------------------------------------------------------

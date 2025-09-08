@@ -36,13 +36,13 @@ reg knight_dir;
 reg walk_dir;
 reg [2:0] walk_pos;
 reg div_clk;
-reg [1:0] clk_divider;
+reg [23:0] clk_divider;
 
 //----------------------------------------------------------------
 //                     Clock divider logic
 //----------------------------------------------------------------
 
-// Input is a 8Hz clock and the speed sel divides it to 4Hz in general and at slow it is 1Hz
+// Input is a 5MHz clock and the speed sel divides it to 4Hz in general and at slow it is 1Hz
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         clk_divider <= 2'b00;
@@ -50,13 +50,16 @@ always @(posedge clk or negedge rst_n) begin
     end else if (pause) begin
         div_clk <= div_clk; // Maintain current state
     end else begin
+        clk_divider <= clk_divider + 1;
         if (speed_sel == 1'b0) begin
-            div_clk <= ~div_clk; // Fastest speed, no division
+            if(clk_divider >= 62500-1)begin
+                div_clk <= ~div_clk; 
+                clk_divider <= 23'd0;
+            end
         end else begin
-            clk_divider <= clk_divider + 1;
-            if (clk_divider == 2'b11) begin
-                div_clk <= ~div_clk; // Toggle every 4 cycles for 1Hz
-                clk_divider <= 2'b00;
+            if (clk_divider >= 2500000-1) begin
+                div_clk <= ~div_clk; 
+                clk_divider <= 23'd0;
             end
         end
     end

@@ -53,21 +53,22 @@ always @(posedge clk or negedge rst_n) begin
         clk_divider <= clk_divider + 1;
         if (speed_sel) begin
         
-//-------------------- Sclaing the frequency to 1Hz by counter value 5000000/2--------------
+//-------------------- Sclaing the frequency to 1Hz by counter value 5000000/2-----------
             if (clk_divider >= 2500000-1) begin
                 div_clk <= ~div_clk; // slow frequency at 1Hz
                 clk_divider <= 23'd0;
             
             end
-//------------------ Sclaing the frequency to 1Hz by counter value 1250000/2----------------
+//------------------ Sclaing the frequency to 4Hz by counter value 1250000/2--------------       
         end else begin
-                if(clk_divider >= 62500-1)begin
+                if(clk_divider >= 625000-1)begin
                 div_clk <= ~div_clk; // fast frequency at 4Hz
                 clk_divider <= 23'd0;
             end
         end
     end
 end
+
 //----------------------------------------------------------------
 //                     Pattern selection logic
 //----------------------------------------------------------------

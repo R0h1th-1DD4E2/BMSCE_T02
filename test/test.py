@@ -20,18 +20,33 @@ class LEDPatternTester:
             6: "Random Sparkle",
             7: "All Off"
         }
+        # Clock frequency is 5MHz (200ns period)
+        self.clock_freq = 5_000_000  # 5MHz
     
-    def display_state(self, pattern, cycle, led_out):
+    def calculate_cycles_for_time(self, time_seconds):
+        """Calculate number of clock cycles for a given time period"""
+        return int(time_seconds * self.clock_freq)
+    
+    def display_state(self, pattern, cycle, led_out, time_elapsed=None):
         """Display current state information"""
         pattern_name = self.pattern_names.get(pattern, f"Unknown({pattern})")
-        self.dut._log.info(f"Pattern: {pattern_name} | Cycle: {cycle} | LED Output: {led_out:08b}")
+        if time_elapsed is not None:
+            self.dut._log.info(f"Pattern: {pattern_name} | Cycle: {cycle} | Time: {time_elapsed:.3f}s | LED Output: {led_out:08b}")
+        else:
+            self.dut._log.info(f"Pattern: {pattern_name} | Cycle: {cycle} | LED Output: {led_out:08b}")
     
-    async def test_pattern(self, pattern, cycles_to_test, speed):
-        """Test a specific pattern for a number of cycles"""
+    async def test_pattern(self, pattern, test_duration, speed):
+        """Test a specific pattern for a specified duration in seconds"""
         speed_name = "Slow" if speed else "Fast"
         pattern_name = self.pattern_names.get(pattern, f"Unknown({pattern})")
         
+        # Calculate sampling interval based on speed
+        sampling_interval = 0.25 if speed else 0.05  # 0.25s for slow, 0.05s for fast
+        sampling_cycles = self.calculate_cycles_for_time(sampling_interval)
+        total_cycles = self.calculate_cycles_for_time(test_duration)
+        
         self.dut._log.info(f"\n=== Testing Pattern {pattern} ({pattern_name}) - Speed: {speed_name} ===")
+        self.dut._log.info(f"Test Duration: {test_duration}s | Sampling Every: {sampling_interval}s ({sampling_cycles} cycles)")
         
         # Enable module using ui_in[5] and set pattern
         # ui_in bit assignment: [5]=enable, [4]=pause, [3]=speed, [2:0]=pattern
@@ -43,11 +58,21 @@ class LEDPatternTester:
         # Disable ui_in[5] after pattern is set
         self.dut.ui_in.value = (pattern & 0x7) | (speed << 3) | (0 << 4) | (0 << 5)  # enable[5]=0
         
-        # Monitor the pattern for specified cycles
-        for i in range(cycles_to_test):
-            await RisingEdge(self.dut.clk)
+        # Monitor the pattern for specified duration, sampling at intervals
+        cycle_count = 0
+        sample_count = 0
+        
+        while cycle_count < total_cycles:
+            # Wait for sampling interval
+            cycles_to_wait = min(sampling_cycles, total_cycles - cycle_count)
+            await ClockCycles(self.dut.clk, cycles_to_wait)
+            cycle_count += cycles_to_wait
+            
+            # Read and display LED output
             led_out = int(self.dut.uo_out.value)
-            self.display_state(pattern, i, led_out)
+            time_elapsed = cycle_count / self.clock_freq
+            self.display_state(pattern, sample_count, led_out, time_elapsed)
+            sample_count += 1
     
     async def test_pause(self, pattern):
         """Test pause functionality"""
@@ -72,12 +97,15 @@ class LEDPatternTester:
         self.dut._log.info("PAUSE ENABLED")
         
         # Wait several clock cycles and check if pattern is frozen
-        for i in range(10):
-            await RisingEdge(self.dut.clk)
+        pause_test_cycles = self.calculate_cycles_for_time(0.1)  # Test pause for 0.1 seconds
+        for i in range(10):  # Sample 10 times during pause
+            await ClockCycles(self.dut.clk, pause_test_cycles // 10)
             current_led = int(self.dut.uo_out.value)
             if current_led != led_before_pause:
-                self.dut._log.error(f"ERROR: Pattern changed during pause at cycle {i}")
+                self.dut._log.error(f"ERROR: Pattern changed during pause at sample {i}")
                 self.dut._log.error(f"Expected: {led_before_pause:08b}, Got: {current_led:08b}")
+            else:
+                self.dut._log.info(f"PASS: Pattern frozen during pause - sample {i}: {current_led:08b}")
         
         # Disable pause - need to enable ui_in[5] to change pause state
         self.dut.ui_in.value = (pattern & 0x7) | (0 << 3) | (0 << 4) | (1 << 5)  # Disable pause, enable=1
@@ -86,7 +114,8 @@ class LEDPatternTester:
         self.dut._log.info("PAUSE DISABLED")
         
         # Wait a few cycles and verify pattern resumes
-        await ClockCycles(self.dut.clk, 3)
+        resume_cycles = self.calculate_cycles_for_time(0.05)
+        await ClockCycles(self.dut.clk, resume_cycles)
         led_after_pause = int(self.dut.uo_out.value)
         self.dut._log.info(f"LED state after pause resume: {led_after_pause:08b}")
     
@@ -99,7 +128,8 @@ class LEDPatternTester:
         await ClockCycles(self.dut.clk, 3)
         self.dut.ui_in.value = 0b000101  # enable=0
         
-        await ClockCycles(self.dut.clk, 5)
+        run_cycles = self.calculate_cycles_for_time(0.1)  # Run for 0.1 seconds
+        await ClockCycles(self.dut.clk, run_cycles)
         led_before_reset = int(self.dut.uo_out.value)
         self.dut._log.info(f"LED output before reset: {led_before_reset:08b}")
         
@@ -126,12 +156,13 @@ class LEDPatternTester:
         
         # Test with ui_in[5] low - pattern changes should be ignored
         self.dut.ui_in.value = 0b000011  # Blink all pattern, enable=0 (bit 5)
-        await ClockCycles(self.dut.clk, 5)
+        test_cycles = self.calculate_cycles_for_time(0.1)
+        await ClockCycles(self.dut.clk, test_cycles)
         self.dut._log.info("Pattern selection with ui_in[5]=0 should be ignored")
         
         # Change pattern while ui_in[5] is low
         self.dut.ui_in.value = 0b000100  # Alternate pattern, enable=0 (bit 5)
-        await ClockCycles(self.dut.clk, 3)
+        await ClockCycles(self.dut.clk, test_cycles // 2)
         led_with_ena_low = int(self.dut.uo_out.value)
         self.dut._log.info(f"LED output with ui_in[5]=0: {led_with_ena_low:08b}")
         
@@ -139,6 +170,7 @@ class LEDPatternTester:
         self.dut.ui_in.value = 0b100100  # Alternate pattern, enable=1 (bit 5)
         await ClockCycles(self.dut.clk, 3)
         self.dut.ui_in.value = 0b000100  # Disable ui_in[5] after pattern is set
+        await ClockCycles(self.dut.clk, test_cycles // 2)
         led_after_ena_high = int(self.dut.uo_out.value)
         self.dut._log.info(f"LED output after ui_in[5]=1: {led_after_ena_high:08b}")
 
@@ -148,8 +180,8 @@ async def test_led_pattern_generator(dut):
     
     dut._log.info("Starting LED Pattern Generator Testbench")
     
-    # Set the clock period to 125ms (8Hz) - matching original testbench
-    clock = Clock(dut.clk, 125, units="ms")
+    # Set the clock period to 200ns (5MHz)
+    clock = Clock(dut.clk, 200, units="ns")
     cocotb.start_soon(clock.start())
     
     # Initialize signals - keep ena low throughout as it's not used
@@ -172,21 +204,16 @@ async def test_led_pattern_generator(dut):
     # Test enable functionality (ui_in[5])
     await tester.test_enable()
     
-    # Test each pattern at fast speed
+    # Test each pattern at fast speed (0.05s sampling, 2s total duration)
     dut._log.info("\n\n********** TESTING ALL PATTERNS AT FAST SPEED **********")
-    await tester.test_pattern(0, 48, 0)  # Knight Rider
-    await tester.test_pattern(1, 48, 0)  # Walking Pair
-    await tester.test_pattern(2, 40, 0)  # Expand/Contract
-    await tester.test_pattern(3, 24, 0)  # Blink All
-    await tester.test_pattern(4, 24, 0)  # Alternate
-    await tester.test_pattern(5, 40, 0)  # Marquee
-    await tester.test_pattern(6, 96, 0)  # Random Sparkle
-    await tester.test_pattern(7, 16, 0)  # All Off
-    
-    # Test some patterns at slow speed
+    test_duration = 2.0  # 2 seconds per pattern
+    await tester.test_pattern(0, test_duration, 0)  # Knight Rider
+    await tester.test_pattern(1, test_duration, 0)  # Walking Pair
+
+    # Test some patterns at slow speed (0.25s sampling, 3s total duration)
     dut._log.info("\n\n********** TESTING SELECTED PATTERNS AT SLOW SPEED **********")
-    await tester.test_pattern(3, 6, 1)   # Blink All - Slow
-    await tester.test_pattern(4, 6, 1)   # Alternate - Slow
+    slow_test_duration = 2.0  # 3 seconds per pattern for slow speed
+    await tester.test_pattern(4, slow_test_duration, 1)   # Alternate - Slow
     
     # Test pause functionality with different patterns
     dut._log.info("\n\n********** TESTING PAUSE FUNCTIONALITY **********")
@@ -201,7 +228,8 @@ async def test_led_pattern_generator(dut):
     dut.ui_in.value = 0b100000  # Knight Rider, fast speed, not paused, enable=1
     await ClockCycles(dut.clk, 3)
     dut.ui_in.value = 0b000000  # enable=0
-    await ClockCycles(dut.clk, 5)
+    switch_test_cycles = tester.calculate_cycles_for_time(0.2)  # 0.2 seconds
+    await ClockCycles(dut.clk, switch_test_cycles)
     knight_rider_output = int(dut.uo_out.value)
     dut._log.info(f"Knight Rider output: {knight_rider_output:08b}")
     
@@ -209,7 +237,7 @@ async def test_led_pattern_generator(dut):
     dut.ui_in.value = 0b100011  # Blink All, fast speed, not paused, enable=1
     await ClockCycles(dut.clk, 3)
     dut.ui_in.value = 0b000011  # enable=0
-    await ClockCycles(dut.clk, 3)
+    await ClockCycles(dut.clk, switch_test_cycles)
     blink_all_output = int(dut.uo_out.value)
     dut._log.info(f"Blink All output: {blink_all_output:08b}")
     
@@ -223,8 +251,8 @@ async def test_basic_functionality(dut):
     
     dut._log.info("Start Basic Test")
     
-    # Set the clock period to 125ms (8Hz) - matching the required frequency
-    clock = Clock(dut.clk, 125, units="ms")
+    # Set the clock period to 200ns (5MHz) - matching the required frequency
+    clock = Clock(dut.clk, 200, units="ns")
     cocotb.start_soon(clock.start())
     
     # Reset - keep ena low throughout
@@ -243,8 +271,10 @@ async def test_basic_functionality(dut):
     await ClockCycles(dut.clk, 1)
     dut.ui_in.value = 0b000011  # Disable ui_in[5] after setting pattern
     
-    # Wait for a few clock cycles and observe output
-    await ClockCycles(dut.clk, 5)
+    # Wait for a reasonable amount of time (0.5 seconds)
+    tester = LEDPatternTester(dut)
+    test_cycles = tester.calculate_cycles_for_time(0.5)
+    await ClockCycles(dut.clk, test_cycles)
     
     # Check that we have some output (not all zeros after reset)
     output = int(dut.uo_out.value)

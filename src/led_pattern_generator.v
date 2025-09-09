@@ -36,7 +36,7 @@ reg knight_dir;
 reg walk_dir;
 reg [2:0] walk_pos;
 reg div_clk;
-reg [23:0] clk_divider;
+reg [22:0] clk_divider;
 
 //----------------------------------------------------------------
 //                     Clock divider logic

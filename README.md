@@ -6,9 +6,8 @@
 
 <div align="center">
 
-**🎯 A sophisticated 8-bit LED choreographer designed for Tiny Tapeout 🎯**
-
-*Demonstrating advanced sequential digital design with state machines, clock domain management, and real-time pattern generation*
+**🎯 A Simple 8-bit LED choreographer designed for Tiny Tapeout 🎯**
+*Simple combinational logic for fun LED patterns and basic animation control*
 
 </div>
 
@@ -26,24 +25,23 @@
 ---
 
 ## 📖 Technical Overview
-
-**Choreo8** is a sophisticated **8-bit LED pattern generator** that showcases advanced sequential digital design concepts. The project implements a hierarchical state machine architecture with intelligent clock domain management, making it ideal for demonstrating **timing control**, **pattern generation algorithms**, and **real-time system design**.
+**Choreo8** is an 8-bit LED pattern generator designed for Tiny Tapeout. It implements multiple LED animation effects using efficient state machines and simple digital logic, demonstrating practical sequential circuit design for ASIC and FPGA platforms.
 
 ### 🏗️ Core Architecture
 
 ```
-    8Hz Clock Input
+    5MHz Clock Input
            ↓
     ┌─────────────────┐
     │  Clock Divider  │ ← speed_sel, pause
-    │   (2-bit FSM)   │
+    │                 │
     └─────────────────┘
            ↓
     1Hz/4Hz Derived Clock
            ↓
     ┌─────────────────┐
     │ Pattern Select  │ ← ena, pat_sel[2:0]
-    │   State Logic   │
+    │         Logic   │
     └─────────────────┘
            ↓
     ┌─────────────────┐
@@ -75,7 +73,7 @@
 ### Tiny Tapeout Pin Assignment
 | TT Pin | Signal | Direction | Function |
 |--------|--------|-----------|----------|
-| `clk` | System Clock | Input | 8Hz reference clock |
+| `clk` | System Clock | Input | 5MHz reference clock |
 | `rst_n` | Reset | Input | Active-low asynchronous reset |
 | `ui_in[5]` | Module Enable | Input | Pattern update gate |
 | `ui_in[4]` | Pause Control | Input | Freeze current state |

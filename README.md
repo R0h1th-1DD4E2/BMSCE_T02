@@ -103,7 +103,7 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 |---------------|------------|-------------------|
 | **Pattern Generation** | 8 patterns × 2 speeds | State transitions, output correctness |
 | **Control Logic** | Enable/disable, pause/resume | Signal gating, state preservation |
-| **Reset Behavior** | Sync/async reset | Initial conditions, state clearing |
+| **Reset Behavior** | Async reset | Initial conditions, state clearing |
 | **Timing Control** | Clock division, speed switching | Frequency accuracy, glitch-free |
 | **Pattern Switching** | Dynamic pattern changes | State machine integrity |
 

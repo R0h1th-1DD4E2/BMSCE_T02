@@ -164,8 +164,8 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 
 ## Special Thanks 
 
-- **Prof. Dr. R. Jaya Gowri**, *BMS College of Engineering*  
-- **Dr.Camilo Velez Cuervo** , *IEEE Electron Devices Society (EDS)* 
+- **Dr.Camilo Velez Cuervo** , *IEEE Electron Devices Society (EDS)*
+- **Prof. Dr. R. Jaya Gowri**, *BMS College of Engineering*
 - **Matt Venn** , *Tiny Tapeout*
 - **G S Bharath** , *Instructor*
  

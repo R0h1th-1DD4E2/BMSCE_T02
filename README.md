@@ -130,34 +130,6 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 ---
 
 
-## 🎨 Applications & Extensions
-
-### 🎪 Demonstration Uses
-- **Digital Design Education**: State machines, timing, sequential logic
-- **LED Art Installations**: Programmable light shows and displays
-- **Embedded System Projects**: Real-time control and pattern generation
-- **FPGA Learning Platform**: Hands-on hardware programming
-
-
----
-
-## 🏆 Technical Achievements
-
-### 🎯 Design Excellence
-- **Zero-Glitch Pattern Switching**: Clean transitions between all 8 patterns
-- **Pause-Aware Clock Management**: Maintains timing integrity during freeze states
-- **Robust Reset Architecture**: Guaranteed initialization in all operating conditions
-- **Efficient State Encoding**: Minimal register usage with maximum functionality
-
-### 🧠 Advanced Algorithms  
-- **Maximal-Length LFSR**: 255-cycle pseudo-random sequence for sparkle effect
-- **Bidirectional State Machines**: Smooth direction reversals in motion patterns  
-- **Symmetric Pattern Generation**: Mathematical LED positioning algorithms
-- **Real-time Speed Control**: Glitch-free frequency switching
-
----
-
-
 ## 📜 License & Acknowledgments
 
 **License**: Apache 2.0 - See [LICENSE](LICENSE) file for details

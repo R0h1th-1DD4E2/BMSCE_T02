@@ -75,6 +75,3 @@ The 8-bit `uo_out[7:0]` directly drives the LED array. Each bit corresponds to o
 - **Walking Pairs**: Adjacent LED pair should smoothly traverse the strip
 - **Expand/Contract**: LEDs should grow from center, then shrink back symmetrically
 - **Random Sparkle**: Should display unpredictable but continuous twinkling
-
-## Credits
-This project was developed under the guidance of **Prof. Dr. JayaGowri** at **BMS College of Engineering**. Special thanks to **IEEE EDS** for their support, and to **TinyTapeout** for providing an accessible platform for ASIC design and fabrication, making it possible for students and researchers to bring their digital designs to silicon.

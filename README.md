@@ -166,7 +166,7 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 
 - **Prof. Dr. R. Jaya Gowri**, *BMS College of Engineering*  
 - **Dr.Camilo Velez Cuervo** , *IEEE Electron Devices Society (EDS)* 
-- **Matt Venn** , *Tiny Tapeout Community*
+- **Matt Venn** , *Tiny Tapeout*
 - **G S Bharath** , *Instructor*
  
 

@@ -162,11 +162,12 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 
 **License**: Apache 2.0 - See [LICENSE](LICENSE) file for details
 
-**Special Thanks**:
+## Special Thanks 
 
 - **Prof. Dr. R. Jaya Gowri**, *BMS College of Engineering*  
-- **IEEE Electron Devices Society (EDS)**  
-- **Tiny Tapeout Community**  
+- **Dr.Camilo Velez Cuervo** ,*IEEE Electron Devices Society (EDS)* 
+- **Matt Venn**,*Tiny Tapeout Community*
+- **G S Bharath**,*Instructor*
  
 
 

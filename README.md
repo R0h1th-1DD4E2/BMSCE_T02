@@ -1,4 +1,4 @@
-# 🕹️ Choreo8 – Advanced LED Pattern Generator
+# Choreo8 – Advanced LED Pattern Generator
 [![GDS Build](../../workflows/gds/badge.svg)](../../actions/workflows/gds.yml)  
 [![Documentation](../../workflows/docs/badge.svg)](../../actions/workflows/docs.yml)  
 [![Test Suite](../../workflows/test/badge.svg)](../../actions/workflows/test.yml)  
@@ -6,66 +6,66 @@
 
 <div align="center">
 
-**🎯 A Simple 8-bit LED choreographer designed for Tiny Tapeout 🎯**
-*Simple combinational logic for fun LED patterns and basic animation control*
+**A Simple 8-bit LED choreographer designed for Tiny Tapeout**<br>
+*Simple digital logic for fun LED patterns and basic animation control*
 
 </div>
 
 ---
 
-## 🌟 Project Highlights
+## Project Highlights
 
-- **🔥 8 Mesmerizing LED Patterns** - From classic Knight Rider to pseudo-random sparkle effects
-- **⚡ Dual-Speed Operation** - Intelligent clock division for 1Hz/4Hz animation rates  
-- **🎛️ Real-time Control** - Pattern switching, pause/resume, and speed control
-- **🧠 Smart State Management** - Pause-aware clock dividers and pattern state preservation
-- **🔬 Comprehensive Verification** - 100+ test cycles with Cocotb Python testbench
-- **🏭 Production-Ready** - Synthesizable for both ASIC (Tiny Tapeout) and FPGA platforms
+- **8 Mesmerizing LED Patterns** - From classic Knight Rider to pseudo-random sparkle effects
+- **Dual-Speed Operation** - Clock division for 1Hz/4Hz animation rates  
+- **Real-time Control** - Pattern switching, pause/resume, and speed control
+- **Smart State Management** - Pause-aware clock dividers and pattern state preservation
+- **Comprehensive Verification** - 100+ test cycles with Cocotb Python testbench
+- **Production-Ready** - Synthesizable for both ASIC (Tiny Tapeout) and FPGA platforms
 
 ---
 
-## 📖 Technical Overview
-**Choreo8** is an 8-bit LED pattern generator designed for Tiny Tapeout. It implements multiple LED animation effects using efficient state machines and simple digital logic, demonstrating practical sequential circuit design for ASIC and FPGA platforms.
+## Technical Overview
+**Choreo8** is an 8-bit LED pattern generator designed for Tiny Tapeout. It implements multiple LED animation effects using simple digital logic, demonstrating practical sequential circuit design for ASIC and FPGA platforms.
 
-### 🏗️ Core Architecture
+### Core Architecture
 
 ```
-    5MHz Clock Input
-           ↓
+      5MHz Clock Input
+             ↓
     ┌─────────────────┐
     │  Clock Divider  │ ← speed_sel, pause
     │                 │
     └─────────────────┘
-           ↓
+             ↓
     1Hz/4Hz Derived Clock
-           ↓
+             ↓
     ┌─────────────────┐
     │ Pattern Select  │ ← ena, pat_sel[2:0]
     │         Logic   │
     └─────────────────┘
-           ↓
+             ↓
     ┌─────────────────┐
-    │ Pattern Engine  │ ← Internal state registers
+    │Pattern generator│ ← Internal state registers
     │  (8 Algorithms) │   (LFSR, counters, FSMs)
     └─────────────────┘
-           ↓
-      led_out[7:0]
+             ↓
+        led_out[7:0]
 ```
 
 ---
 
-## ✨ Pattern Showcase
+## Pattern Showcase
 
 | Pattern | Algorithm | State Elements | Visual Description |
 |---------|-----------|----------------|-------------------|
-| **🏎️ Knight Rider** | Bidirectional FSM | `knight_pos[1:0]`, `knight_dir` | Symmetric LEDs sweep back and forth like KITT |
-| **🚶 Walking Pair** | Linear traversal | `walk_pos[2:0]`, `walk_dir` | Two adjacent LEDs march left and right |
-| **🔄 Expand/Contract** | Cyclical pattern | `expand_pose[2:0]` | LEDs grow from center, then contract |
-| **💫 Blink All** | Toggle generator | `toggle_state` | Synchronized full-array blinking |
-| **♟️ Alternate** | Checkerboard toggle | `toggle_state` | Classic odd/even LED alternation |
-| **🎪 Marquee** | Barrel shifter | `marquee_reg[7:0]` | Theater-style rotating chase lights |
-| **✨ Random Sparkle** | 8-bit LFSR | `lfsr[7:0]` | Pseudo-random flicker (maximal sequence) |
-| **🌙 All Off** | Static output | - | Complete LED array disable |
+| **Knight Rider** | Converging/Diverging | `knight_pos[1:0]`, `knight_dir` | LEDs start at both ends, move toward center, then return to ends |
+| **Walking Pair** | Linear traversal | `walk_pos[2:0]`, `walk_dir` | Two adjacent LEDs march left and right |
+| **Expand/Contract** | Sequential pattern | `expand_pose[2:0]` | LEDs grow from center to edges, then contract back to center |
+| **Blink All** | Toggle generator | `toggle_state` | Synchronized full-array blinking |
+| **Alternate** | Checkerboard toggle | `toggle_state` | Classic odd/even LED alternation |
+| **Marquee** | Barrel shifter | `marquee_reg[7:0]` | Theater-style rotating chase lights |
+| **Random Sparkle** | 8-bit LFSR | `lfsr[7:0]` | Pseudo-random flicker (maximal sequence) |
+| **All Off** | Static output | - | Complete LED array disable |
 
 
 ---
@@ -84,7 +84,7 @@
 ---
 
 
-### 🎮 Real-time Control Features
+### Real-time Control Features
 - **Pattern Switching**: Change `ui_in[2:0]` while `ui_in[5]` is high
 - **Speed Control**: Toggle `ui_in[3]` for 4× speed difference  
 - **Pause/Resume**: Use `ui_in[4]` to freeze/unfreeze current state
@@ -92,27 +92,26 @@
 
 ---
 
-## 🧪 Verification & Testing
+## Verification & Testing
 
-### 🐍 Cocotb Test Framework
+### Cocotb Test Framework
 The project features a **comprehensive Python-based testbench** using Cocotb
 
 
-### 📊 Test Coverage Matrix
+### Test Coverage Matrix
 | Test Category | Test Cases | Verification Points |
 |---------------|------------|-------------------|
 | **Pattern Generation** | 8 patterns × 2 speeds | State transitions, output correctness |
 | **Control Logic** | Enable/disable, pause/resume | Signal gating, state preservation |
 | **Reset Behavior** | Async reset | Initial conditions, state clearing |
 | **Timing Control** | Clock division, speed switching | Frequency accuracy, glitch-free |
-| **Pattern Switching** | Dynamic pattern changes | State machine integrity |
+| **Pattern Switching** | Dynamic pattern changes | Register state integrity |
 
 
 
-### 🔬 Advanced Test Features
+### Advanced Test Features
 - **Real-time Pattern Monitoring**: Cycle-by-cycle LED state logging
 - **Pause State Verification**: Ensures frozen patterns maintain exact state
-- **Pattern Switching Validation**: Confirms clean transitions between modes  
 - **Clock Domain Testing**: Verifies correct frequency division
 - **Reset Recovery Testing**: Validates proper initialization sequences
 
@@ -120,17 +119,16 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 
 
 
-### 🔧 Design Optimizations
-- **Clock Domain Separation**: Isolated pattern logic from system clock
-- **State Preservation**: Pause functionality maintains exact pattern position  
-- **Resource Sharing**: Efficient toggle_state usage across multiple patterns
+### Design Optimizations
+- **Clock Division Logic**: Generates slower pattern clocks from main 5MHz clock
+- **State Preservation**: Pause functionality maintains exact pattern position 
 - **Reset Strategy**: Asynchronous reset with synchronous release
 - **Pattern Memory**: Optimized state encoding for minimal register usage
 
 ---
 
 
-## 📜 License & Acknowledgments
+## License & Acknowledgments
 
 **License**: Apache 2.0 - See [LICENSE](LICENSE) file for details
 
@@ -141,11 +139,4 @@ The project features a **comprehensive Python-based testbench** using Cocotb
 - **Matt Venn** , *Tiny Tapeout*
 - **G S Bharath** , *Instructor*
  
-
-
 ---
-
-
-
-
-</div>

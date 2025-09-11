@@ -39,7 +39,7 @@ test/
 ## Test Coverage
 ### LED Patterns Tested
 The test suite validates all 8 LED patterns:
-1. **Knight Rider** - Scanning LED effect
+1. **Knight Rider** - Two LEDs converging at center then diverging to ends
 2. **Walking Pair** - Two adjacent LEDs moving
 3. **Expand/Contract** - LEDs expanding from center and contracting
 4. **Blink All** - All LEDs blinking simultaneously
@@ -47,6 +47,7 @@ The test suite validates all 8 LED patterns:
 6. **Marquee** - Rotating LED chase pattern
 7. **Random Sparkle** - Random LED activation
 8. **All Off** - All LEDs disabled
+
 ### Control Features Tested
 - **Speed Control**: Fast (4Hz) and slow (1Hz) speeds
 - **Pause Functionality**: Pattern freezing and resuming
@@ -59,6 +60,7 @@ The test suite validates all 8 LED patterns:
 - `ui_in[4]` - Pause control (0=run, 1=pause)
 - `ui_in[5]` - Enable signal for pattern changes
 - `uo_out[7:0]` - 8-bit LED output
+
 ## Test Implementation Details
 ### LEDPatternTester Class
 The main test class provides methods for:

@@ -19,14 +19,14 @@ This clock division provides precise timing control for smooth pattern animation
 ### Core Architecture
 1. **Pattern Selection**: A 3-bit input (`pat_sel`) selects from 8 different patterns
 2. **Clock Division**: Internal divider creates timing references for pattern updates from the 5MHz base clock
-3. **State Machines**: Each pattern uses dedicated state variables to track position and direction
+3. **Pattern Registers**: Each pattern uses dedicated registers to track position and direction
 4. **Output Logic**: Combinatorial logic generates the 8-bit LED output based on current pattern state
 
 ### Pattern Descriptions
 | Pattern | Description | Visual Effect |
 |---------|-------------|---------------|
-| **Knight Rider** | Two LEDs start at opposite ends, meet in middle, return | Classic "Cylon eye" bouncing effect |
-| **Walking Pairs** | Adjacent LED pair walks left-to-right and back | Smooth pair movement with wraparound |
+| **Knight Rider** | Two LEDs start at opposite ends, meet in middle, return | Symmetric converging/diverging LED effect |
+| **Walking Pairs** | Adjacent LED pair walks left-to-right and back | Bidirectional pair movement with direction reversal |
 | **Expand/Contract** | LEDs expand from center outward, then contract | Breathing effect from middle |
 | **Blink All** | All 8 LEDs flash simultaneously | Simple synchronized blinking |
 | **Alternate** | Checkerboard pattern alternates | 10101010 ↔ 01010101 pattern |
